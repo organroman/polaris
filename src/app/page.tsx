@@ -1,16 +1,7 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import { useMutation, useQuery } from "convex/react";
+import { ProjectsView } from "@/features/projects/components/projects-view";
 
 const Home = () => {
-  // const projects = useQuery(api.projects.get);
-  // const createProject = useMutation(api.projects.create);
-
-  return (
-    <div>
-      <Button>Click me</Button>
-    </div>
-  );
+  return <ProjectsView />;
 };
 
 export default Home;
