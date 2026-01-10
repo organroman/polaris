@@ -1,6 +1,7 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { verifyAuth } from "./auth";
+import { th } from "date-fns/locale";
 
 export const create = mutation({
   args: {
@@ -44,5 +45,50 @@ export const get = query({
       .withIndex("byOwner", (q) => q.eq("ownerId", identity?.subject))
       .order("desc")
       .collect();
+  },
+});
+
+export const getById = query({
+  args: {
+    id: v.id("projects"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await verifyAuth(ctx);
+
+    const project = await ctx.db.get("projects", args.id);
+
+    if (!project) {
+      throw new Error("Project not found");
+    }
+
+    if (project.ownerId !== identity.subject) {
+      throw new Error("Unauthorized access to project");
+    }
+    return project;
+  },
+});
+
+export const rename = mutation({
+  args: {
+    id: v.id("projects"),
+    name: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await verifyAuth(ctx);
+
+    const project = await ctx.db.get("projects", args.id);
+
+    if (!project) {
+      throw new Error("Project not found");
+    }
+
+    if (project.ownerId !== identity.subject) {
+      throw new Error("Unauthorized access to project");
+    }
+
+    await ctx.db.patch("projects", args.id, {
+      name: args.name,
+      updatedAt: Date.now(),
+    });
   },
 });
