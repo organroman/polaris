@@ -1,7 +1,6 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { verifyAuth } from "./auth";
-import { th } from "date-fns/locale";
 
 export const create = mutation({
   args: {
